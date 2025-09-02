@@ -18,11 +18,7 @@ import { MOCK_ROOM_TYPES } from '@/data/Rooms'
 import { useEncryption } from '@/composables/useEncryption'
 import type { addRoomDates, updateRoomDates } from '@/types/index'
 
-const steps = [
-  { label: 'Room and Date' },
-  { label: 'Hotel Checkout' },
-  { label: 'Reservation Sent' },
-]
+const steps = [{ label: 'Room and Date' }, { label: 'Hotel Checkout' }, { label: 'Inquiry Sent' }]
 
 const { bookings, removeBooking, updateRoomDates, addBooking } = useBooking()
 const bookingDetails = useBookingDetails()

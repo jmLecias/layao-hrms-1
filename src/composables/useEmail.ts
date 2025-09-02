@@ -30,7 +30,8 @@ export function useEmail() {
     try {
       // Build HTML table for booked rooms
       const roomsTable = `
-        <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 14px;">
+        <table border="1" cellpadding="6" cellspacing="0"
+         style="border-collapse: collapse; width: 100%; font-size: 14px; min-width: 600px;">
           <thead style="background-color: #f9f9f9;">
         <tr>
           <th align="left">Room</th>

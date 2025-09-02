@@ -30,7 +30,7 @@
     <!-- Message -->
     <div>
       <h1 id="thank-title" class="text-xl font-semibold mb-2">
-        Thanks — we received your reservation inquiry
+        Thank you — we received your reservation inquiry
       </h1>
       <p class="text-gray-600">
         Hi there — thank you for contacting <strong>LaYao Beach Resort</strong> about your
