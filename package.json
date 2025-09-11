@@ -26,6 +26,7 @@
     "dayjs": "^1.11.13",
     "emailjs-com": "^3.2.0",
     "pinia": "^3.0.3",
+    "swiper": "^11.2.10",
     "tailwindcss": "^4.1.11",
     "vue": "^3.5.18",
     "vue-easy-lightbox": "^1.19.0",

@@ -8,6 +8,7 @@ import InformationCard from '../components/InformationCard.vue'
 import HotelMap from '@/components/HotelMap.vue'
 import { MOCK_DATA_IMAGES } from '@/data/ImageCarousel'
 import { MOCK_ROOM_TYPES } from '@/data/Rooms'
+import PromoCarousel from '@/components/promo_banner/PromoCarousel.vue'
 
 const images: string[] = MOCK_DATA_IMAGES.map((image) => image.url)
 const rooms = MOCK_ROOM_TYPES.slice(0, 3)
@@ -16,6 +17,7 @@ const rooms = MOCK_ROOM_TYPES.slice(0, 3)
 <!-- src/pages/HomePage.vue -->
 <template>
   <title>Hello</title>
+  <PromoCarousel />
   <HeroBanner
     title="Welcome to Layao"
     subtitle="Relax and Embrace Nature"
