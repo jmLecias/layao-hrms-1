@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import { Head } from '@inertiajs/vue3'
 import FeatureSection from '@/components/layout/FeatureSection.vue'
-import HeroBannerBreadcrumbs from '@/components/HeroBanner.vue'
+import HeroBannerBreadcrumbs from '@/components/layout/HeroBannerBreadcrumbs.vue'
 import MultiStepHeader from '@/components/MultiStepHeader.vue'
 import Button from '@/components/ui/Button/Button.vue'
 import StepOne from '@/components/booking/multistep/StepOne.vue'
@@ -191,7 +191,7 @@ const handleModalOpen = () => {
 <template>
   <!-- <Head title="Rooms" /> -->
   <HeroBannerBreadcrumbs
-    title="Our Rooms"
+    title="Book Your Stay"
     :breadcrumbs="[{ text: 'Home', link: '/' }, { text: 'Rooms' }]"
     backgroundImage="/images/hero-img.jpg"
   />
