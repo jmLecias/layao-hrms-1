@@ -29,85 +29,114 @@ export function useEmail() {
   const sendReservationAcknowledgement = async (data: ReservationData, template: string) => {
     try {
       // Build HTML table for booked rooms
-      const roomsTable = `
-        <table border="1" cellpadding="6" cellspacing="0"
-         style="border-collapse: collapse; width: 100%; font-size: 14px; min-width: 600px;">
-          <thead style="background-color: #f9f9f9;">
-        <tr>
-          <th align="left">Room</th>
-          <th align="center">Qty</th>
-          <th align="center">Rate</th>
-          <th align="center">Capacity</th>
-          <th align="center">Check-In</th>
-          <th align="center">Check-Out</th>
-          <th align="center">Nights</th>
-          <th align="center">Total</th>
-        </tr>
-          </thead>
-          <tbody>
-        ${data.bookedRooms
+      // Mobile-friendly "card" layout per product (no tables)
+      const roomsTable = (() => {
+        const currency = (n: number) => `₱${Number(n || 0).toLocaleString()}`
+
+        const cards = data.bookedRooms
           .map((room) => {
             const checkIn = new Date(room.checkInDate)
             const checkOut = new Date(room.checkOutDate)
             const nights = Math.max(0, Math.round((+checkOut - +checkIn) / (1000 * 60 * 60 * 24)))
+            const rateSuffix = room.roomName === 'Barkadahan' ? ' / Pax' : ''
+            const rate = currency(room.rate) + rateSuffix
+            const total = currency(room.totalCost)
+            const cap = room.capacity || 'N/A'
+            const ci = isNaN(checkIn.getTime()) ? '-' : checkIn.toLocaleDateString()
+            const co = isNaN(checkOut.getTime()) ? '-' : checkOut.toLocaleDateString()
+
             return `
-          <tr>
-            <td>${room.roomName}</td>
-            <td align="center">${room.quantity}</td>
-            <td align="center">₱${Number(room.rate).toLocaleString()}${
-              room.roomName === 'Barkadahan' ? ' / Pax' : ''
-            }</td>
-            <td align="center">${room.capacity || 'N/A'}</td>
-            <td align="center">${isNaN(checkIn.getTime()) ? '' : checkIn.toLocaleDateString()}</td>
-            <td align="center">${
-              isNaN(checkOut.getTime()) ? '' : checkOut.toLocaleDateString()
-            }</td>
-            <td align="center">${nights}</td>
-            <td align="center">₱${Number(room.totalCost).toLocaleString()}</td>
-          </tr>
-            `
-          })
-          .join('')}
-        ${(() => {
-          // Support for an explicit additionalJoiner field if provided on the reservation data
-          // (e.g. data.additionalJoiner, data.additionalJoinerRate, data.additionalJoinerTotal).
-          const aj = (data as any).additionalJoiner ?? 0
-          const ajRate = 999
-          const ajTotal = (data as any).additionalJoinerTotal ?? aj * ajRate
-          if (aj && aj > 0) {
-            return `
-          <tr style="background-color:#f1f1f1;">
-            <td>Additional Joiner</td>
-            <td align="center">${aj}</td>
-            <td align="center">₱${Number(ajRate).toLocaleString()}</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">₱${Number(ajTotal).toLocaleString()}</td>
-          </tr>
-            `
-          }
-          // Fallback: if there's a generic addOnTotal but no explicit additionalJoiner, show an Add-ons row
-          if (data.addOnTotal && Number(data.addOnTotal) > 0) {
-            return `
-          <tr style="background-color:#f1f1f1;">
-            <td>Add-ons</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">-</td>
-            <td align="center">₱${Number(data.addOnTotal).toLocaleString()}</td>
-          </tr>
-            `
-          }
-          return ''
-        })()}
-          </tbody>
-        </table>
+        <div style="
+          margin:0 0 12px 0;
+          padding:12px;
+          border:1px solid #e6e6e6;
+          border-radius:10px;
+          background:#ffffff;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size:14px;
+          line-height:1.45;
+          color:#222;
+        ">
+          <!-- Top line: Room name + Total -->
+          <div style="display:block; margin:0 0 6px 0;">
+            <span style="font-weight:700;">${room.roomName}</span>
+            <span style="float:right; font-weight:700;">${total}</span>
+          </div>
+
+          <!-- Chips row: wraps naturally on mobile -->
+          <div style="display:block; clear:both;">
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Qty:</span> ${room.quantity}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Rate:</span> ${rate}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Cap:</span> ${cap}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Check-In:</span> ${ci}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Check-Out:</span> ${co}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Nights:</span> ${nights}
+            </span>
+          </div>
+        </div>
       `
+          })
+          .join('')
+
+        // Optional: Additional Joiner “card”
+        const aj = (data as any).additionalJoiner ?? 0
+        const ajRate = 999
+        const ajTotal = (data as any).additionalJoinerTotal ?? aj * ajRate
+        const joinerCard =
+          aj && aj > 0
+            ? `
+        <div style="
+          margin:0 0 12px 0;
+          padding:12px;
+          border:1px solid #e6e6e6;
+          border-radius:10px;
+          background:#fcfcfc;
+          font-family: Arial, Helvetica, sans-serif;
+          font-size:14px;
+          line-height:1.45;
+          color:#222;
+        ">
+          <div style="display:block; margin:0 0 6px 0;">
+            <span style="font-weight:700;">Additional Joiner</span>
+            <span style="float:right; font-weight:700;">${currency(ajTotal)}</span>
+          </div>
+          <div style="display:block; clear:both;">
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Qty:</span> ${aj}
+            </span>
+            <span style="display:inline-block; margin:4px 6px 0 0; padding:6px 8px; border:1px solid #eee; border-radius:999px; background:#fafafa;">
+              <span style="color:#666;">Rate:</span> ${currency(ajRate)}
+            </span>
+          </div>
+        </div>
+      `
+            : ''
+
+        // Optional: Grand total summary bar
+        const roomsTotal = (data.bookedRooms || []).reduce(
+          (sum: number, r: any) => sum + Number(r.totalCost || 0),
+          0,
+        )
+        const grandTotal = roomsTotal + (aj ? ajTotal : 0)
+
+        return `
+    <div style="width:100%; max-width:640px; margin:0 auto;">
+      ${cards}
+      ${joinerCard}
+    </div>
+  `
+      })()
 
       // Send the email
       const result = await emailjs.send(

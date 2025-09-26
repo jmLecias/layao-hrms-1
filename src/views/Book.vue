@@ -253,7 +253,7 @@ const handleModalOpen = () => {
         ></i>
         {{
           sendingEmail
-            ? 'Reservation in Progress...'
+            ? 'Sending Inquiry Email...'
             : currentStep === steps.length - 1
               ? 'Okay'
               : currentStep === steps.length - 2
